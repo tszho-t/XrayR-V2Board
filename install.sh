@@ -151,66 +151,25 @@ install_XrayR() {
     if [[ ! -f /etc/XrayR/dns.json ]]; then
         cp dns.json /etc/XrayR/
     fi
-    
+    if [[ ! -f /etc/XrayR/route.json ]]; then
+        cp route.json /etc/XrayR/
+    fi
+    if [[ ! -f /etc/XrayR/custom_outbound.json ]]; then
+        cp custom_outbound.json /etc/XrayR/
+    fi
+    if [[ ! -f /etc/XrayR/custom_inbound.json ]]; then
+        cp custom_inbound.json /etc/XrayR/
+    fi
+    if [[ ! -f /etc/XrayR/rulelist ]]; then
+        cp rulelist /etc/XrayR/
+    fi    
     curl -o /usr/bin/XrayR -Ls https://raw.githubusercontent.com/tszho-t/XrayR-V2Board/master/XrayR.sh
     chmod +x /usr/bin/XrayR
-    
-    # 设置节点序号
-    echo "设定节点序号"
-    echo ""
-    read -p "请输入V2Board中的节点序号:" node_id
-    [ -z "${node_id}" ]
-    echo "---------------------------"
-    echo "您设定的节点序号为 ${node_id}"
-    echo "---------------------------"
-    echo ""
 
-    # 选择协议
-    echo "选择节点类型(默认V2ray)"
-    echo ""
-    read -p "请输入你使用的协议(V2ray, Shadowsocks, Trojan):" node_type
-    [ -z "${node_type}" ]
-    
-    # 如果不输入默认为V2ray
-    if [ ! $node_type ]; then 
-    node_type="V2ray"
-    fi
 
-    echo "---------------------------"
-    echo "您选择的协议为 ${node_type}"
-    echo "---------------------------"
-    echo ""
-    
-    # 关闭AEAD强制加密
-    echo "选择是否关闭AEAD强制加密(默认开启AEAD)"
-    echo ""
-    read -p "请输入您的选择(1为开启,0为关闭):" aead_disable
-    [ -z "${aead_disable}" ]
-   
 
-    # 如果不输入默认为开启
-    if [ ! $aead_disable ]; then
-    aead_disable="1"
-    fi
 
-    echo "---------------------------"
-    echo "您的设置为 ${aead_disable}"
-    echo "---------------------------"
-    echo ""
 
-    # Writing json
-    echo "正在尝试写入配置文件..."
-    wget https://cdn.jsdelivr.net/gh/missuo/XrayR-V2Board/config.yml -O /etc/XrayR/config.yml
-    sed -i "s/NodeID:.*/NodeID: ${node_id}/g" /etc/XrayR/config.yml
-    sed -i "s/NodeType:.*/NodeType: ${node_type}/g" /etc/XrayR/config.yml
-    echo ""
-    echo "写入完成，正在尝试重启XrayR服务..."
-    echo
-    
-    if [ $aead_disable == "0" ]; then
-    echo "正在关闭AEAD强制加密..."
-    sed -i 'N;18 i Environment="XRAY_VMESS_AEAD_FORCED=false"' /etc/systemd/system/XrayR.service
-    fi
 
     systemctl daemon-reload
     XrayR restart
