@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
-
-sed -i "/ConnetionConfig/{s/ConnetionConfig/ConnectionConfig/g}" /etc/XrayR/config.yml
 cd
+sed -i "/ConnetionConfig/{s/ConnetionConfig/ConnectionConfig/g}" /etc/XrayR/config.yml
 wget https://raw.githubusercontent.com/XrayR-project/XrayR-release/master/XrayR.sh
 chmod +x XrayR.sh
 ./XrayR.sh update
